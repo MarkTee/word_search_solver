@@ -1,26 +1,30 @@
 class Trie:
-    """A very basic implentation of a trie that only supports adding words and determining whether a given prefix exists within it."""
+    """A very basic implentation of a trie.
+
+    Only supports adding words and determining whether a given prefix exists
+    within it.
+    """
 
     def __init__(self):
         self._head = TrieNode()
 
     def insert_word(self, word):
-        """Adds a word as a terminal node to the trie (as well as all intermediate nodes)."""
+        """Adds a word to the trie (as well as all intermediate nodes)."""
         node = self._head
-        terminal_node = True
+        remaining_letters_index = None
 
-        for i in range(len(word)):
-            if word[i] in node.children:
-                node = node.children[word[i]]
+        for index, letter in enumerate(word):
+            if letter in node.children:
+                node = node.children[letter]
             else:
-                terminal_node = False
+                remaining_letters_index = index
                 break
 
-        if not terminal_node:
-            while i < len(word):
-                node.add_child(word[i])
-                node = node.children[word[i]]
-                i += 1
+        # Add nodes for any letters that aren't already present in the trie
+        if remaining_letters_index is not None:
+            for letter in word[index:]:
+                node.add_child(letter)
+                node = node.children[letter]
 
     def find_prefix(self, prefix):
         """Determines whether a given prefix exists in the trie."""
@@ -44,7 +48,7 @@ class TrieNode:
         self._children = {}
 
     def add_child(self, child):
-        """Adds a descendant (which will have a common prefix) to the current node."""
+        """Adds a descendant (which will have a common prefix) to the node."""
         self._children[child] = TrieNode()
 
     @property

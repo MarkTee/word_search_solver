@@ -9,11 +9,11 @@ class Trie:
         self.head = TrieNode()
 
     def insert_word(self, word):
-        """Adds a word (and all of the prefixes that it contains) to the trie."""
+        """Adds a word (and all its prefixes) to the trie."""
         node = self.head
         remaining_prefixes = None
 
-        # Traverse the tree until a prefix that isn't contained in the trie is found
+        # Traverse the tree until a new prefix is found
         for index, letter in enumerate(word):
             if letter in node.children:
                 node = node.children[letter]
@@ -53,7 +53,7 @@ class TrieNode:
         self._children = {}
 
     def add_child(self, child):
-        """Adds a descendant (which shares a common prefix) to the given node."""
+        """Adds a descendant to the given node."""
         self._children[child] = TrieNode()
 
     @property

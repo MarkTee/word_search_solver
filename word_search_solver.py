@@ -49,21 +49,32 @@ class WordSearch:
         return self.grid[row][column]
 
     def solve(self):
-        while self.remaining_words:
-            row_index = 0
+        """Solves the word search by locating the positions of all words.
+
+        Iterates over every cell in the grid and, if a possible match is found,
+        traverses its neighbours, until all words have been found
+        """
+        row_index = 0
+        while row_index <= len(self.grid):
             for row in self.grid:
                 col_index = 0
                 for letter in row:
-                    # If the cell contains a letter that is the first letter of one of the words
+                    # If the cell contains a letter that is the first letter of
+                    # one of the words, then traverse all of its neighbours
+                    # to see if any longer prefixes can be found.
                     if self.trie.contains_prefix(letter):
                         self.traverse_tiles(letter, row_index, col_index)
                     col_index += 1
                 row_index += 1
 
+        # Inform the user if some words haven't been found
+        sorted_remaining_words = list(self.remaining_words)
+        sorted_remaining_words.sort()
+        print('The following words were not found: {}'.format(
+              ', '.join(sorted_remaining_words)))
+
     def traverse_tiles(self, letter, row_index, col_index):
-        # if prefix in self.remaining_words:
-        #     self.found_words.append(prefix)
-        #     self.remaining_words.remove(prefix)
+
         directions = {'right':    (0, 1),
                       'down-right': (1, 1),
                       'down':       (1, 0),

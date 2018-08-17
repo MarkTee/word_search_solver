@@ -26,7 +26,6 @@ class Trie:
             for letter in word[remaining_prefixes:]:
                 node.add_child(letter)
                 node = node.children[letter]
-                index += 1
 
     def contains_prefix(self, prefix):
         """Determines whether a given prefix exists in the trie."""

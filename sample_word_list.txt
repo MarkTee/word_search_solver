@@ -1,1 +1,1 @@
-week, find, random, sleuth, backward, vertical, diagonal, wikipedia, horizontal, word search
+find, random, sleuth, backward, vertical, diagonal, wikipedia, horizontal, wordsearch, draw

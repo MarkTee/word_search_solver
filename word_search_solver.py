@@ -62,23 +62,22 @@ class WordSearch:
         for word in self._word_list:
             self.trie.insert_word(word)
 
-    def print_grid(self):
-        """Prints the word search grid to the terminal."""
+    def print_puzzle(self):
+        """Prints the word search grid and the list of words to the terminal."""
         print()
         for row in self.grid:
             print(' '.join(row))
-
-    def print_word_list(self):
-        """Prints the list of words to the terminal."""
         print()
         for word in self._word_list:
             print(word)
 
     def print_solutions(self):
         """Prints all solutions to the terminal."""
+        print()
         for word in self._word_list:
-            row_index = self.solutions[word][0][0]
-            col_index = self.solutions[word][0][1]
+            # Add 1 to each coordinate as it will be clearer for the user.
+            row_index = self.solutions[word][0][0] + 1
+            col_index = self.solutions[word][0][1] + 1
             direction = self.solutions[word][1]
             print("'{}' can be found at row {}, column {} and moving {}".format(word, row_index, col_index, direction))
 
@@ -145,7 +144,6 @@ class WordSearch:
                     self.solutions[prefix] = ((row_index, col_index), direction)
                     # If all words have been found, then exit the program
                     if not self.remaining_words:
-                        print("solved!")
                         self.print_solutions()
                         exit()
 
@@ -217,7 +215,9 @@ def main():
     word_list = build_word_list('sample_word_list.txt')
     word_search = WordSearch(grid, word_list)
 
+    word_search.print_puzzle()
     word_search.solve()
+    word_search.print_solutions()
 
 
 if __name__ == '__main__':

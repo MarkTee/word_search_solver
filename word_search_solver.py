@@ -84,8 +84,8 @@ class WordSearch:
                         key=len)) + 1  # width of the longest word plus padding
         for word in self._word_list:
             if self.solutions[word] is None:
-                print("""{:{width}} -
-                      Could not be found""".format(word, width=str(width)))
+                print("{:{width}} - "
+                      "Could not be found".format(word, width=str(width)))
             else:
                 # Add 1 to each coordinate as it will be clearer for the user.
                 row_index = self.solutions[word][0][0] + 1
@@ -156,7 +156,7 @@ class WordSearch:
                     self.remaining_words.remove(prefix)
                     # Mark a solution as having been found
                     self.solutions[prefix] = ((row_index, col_index), direction)
-                    if not self.remaining_words:  # if all words are found
+                    if not self.remaining_words:  # yeords are found
                         return
 
                 # If a valid prefix is found, continue to traverse the grid in
@@ -224,8 +224,8 @@ def build_word_list(filename):
 
 def main():
     """Builds and solves a sample word search."""
-    grid = build_grid('sample_grid.txt')
-    word_list = build_word_list('sample_word_list.txt')
+    grid = build_grid('sample_grid2.txt')
+    word_list = build_word_list('sample_word_list2.txt')
     word_search = WordSearch(grid, word_list)
 
     word_search.solve()

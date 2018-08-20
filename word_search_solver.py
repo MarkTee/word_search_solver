@@ -16,6 +16,8 @@ class WordSearch:
             vectors of the following form: (change_in_row, change_in_column).
 
         grid: A 2d list representing the word search grid.
+        self.rows, self.cols: The dimensions of the word search grid; the
+            grid will always be rectangular.
         word_list: A list representation of all the words that need to be
             found; this value should remain static.
         remaining_words: A set containing the words that have not yet been
@@ -45,6 +47,8 @@ class WordSearch:
         - Builds a trie representing the WordSearch's words.
         """
         self.grid = grid
+        self.rows = len(self.grid)
+        self.cols = len(self.grid[0])
         self._word_list = word_list
         self.remaining_words = set(word_list)
         self.found_words = []
@@ -111,34 +115,51 @@ class WordSearch:
               ', '.join(sorted_remaining_words)))
 
     def traverse_tiles(self, prefix, row_index, col_index, direction):
-        """..."""
+        """Traverses the grid and builds prefixes.
+
+        Longer prefixes are built by concatenating neighbouring cells in a
+        given direction. Traversal continues until either a word or an invalid
+        prefix is found.
+
+        Args:
+            prefix: Initially the prefix will always be a single letter (found
+                at the starting cell).
+            row_index, col_index: The grid coordinates from which traversal
+                should start.
+            direction: A key from the WordSearch.directions class attribute
+                that's used to represent the direction in which the traversal
+                should be carried out.
+        """
         next_row_index = row_index
         next_col_index = col_index
         change_in_row = WordSearch.directions[direction][0]
         change_in_col = WordSearch.directions[direction][1]
 
         while True:
-            next_row_index += change_in_row
-            next_col_index += change_in_col
-            try:
-                prefix += self.get_letter(next_row_index, next_col_index)
-            except IndexError:
-                break
-
             if self.trie.contains_prefix(prefix):
+                # If the current prefix is one words that needs to be found
                 if prefix in self.remaining_words:
+                    # Update the word and solutions lists
                     self.found_words.append(prefix)
                     self.remaining_words.remove(prefix)
                     self.solutions[prefix] = ((row_index, col_index), direction)
+                    # If all words have been found, then exit the program
                     if not self.remaining_words:
                         print("solved!")
                         self.print_solutions()
                         exit()
-                    break
+
+                # If a valid prefix is found, continue to traverse the grid in
+                # the given direction
+                next_row_index += change_in_row
+                next_col_index += change_in_col
+                # If an edge of the grid is about to be crossed, then stop traversal
+                if 0 <= next_row_index < self.rows and 0 <= next_col_index < self.cols:
+                    prefix += self.get_letter(next_row_index, next_col_index)
                 else:
-                    continue
+                    return
             else:
-                break
+                return
 
 
 # Helper functions to build a WordSearch object from input files
@@ -195,10 +216,6 @@ def main():
     grid = build_grid('sample_grid.txt')
     word_list = build_word_list('sample_word_list.txt')
     word_search = WordSearch(grid, word_list)
-
-    # word_search.print_grid()
-    # word_search.print_word_list()
-    # print()
 
     word_search.solve()
 

@@ -11,8 +11,9 @@ class WordSearch:
     - Methods to display and solve the word search
 
     Attributes:
-        directions: A dictionary mapping the names of the eight directions used
-            when traversing the grid to their corresponding coordinate vectors.
+        directions: A dictionary mapping the names of the eight directions
+            (used when traversing the grid) to their corresponding coordinate
+            vectors of the following form: (change_in_row, change_in_column).
 
         grid: A 2d list representing the word search grid.
         word_list: A list representation of all the words that need to be
@@ -53,21 +54,29 @@ class WordSearch:
         self.build_trie()
 
     def build_trie(self):
-        """Populate the trie with all words from the word list."""
+        """Populates the trie with all words from the word list."""
         for word in self._word_list:
             self.trie.insert_word(word)
 
     def print_grid(self):
-        """Print the word search grid to the terminal."""
+        """Prints the word search grid to the terminal."""
         print()
         for row in self.grid:
             print(' '.join(row))
 
     def print_word_list(self):
-        """Print the list of words to the terminal."""
+        """Prints the list of words to the terminal."""
         print()
         for word in self._word_list:
             print(word)
+
+    def print_solutions(self):
+        """Prints all solutions to the terminal."""
+        for word in self._word_list:
+            row_index = self.solutions[word][0][0]
+            col_index = self.solutions[word][0][1]
+            direction = self.solutions[word][1]
+            print("'{}' can be found at row {}, column {} and moving {}".format(word, row_index, col_index, direction))
 
     def get_letter(self, row, column):
         """Get the letter contained at a given cell."""
@@ -86,10 +95,12 @@ class WordSearch:
                 col_index = 0
                 for letter in row:
                     # If the cell contains a letter that is the first letter of
-                    # one of the words, then traverse all of its neighbours
-                    # to see if any longer prefixes can be found.
+                    # one of the words, then traverse all of its neighbours (in
+                    # all directions) to see if any longer prefixes can be
+                    # found.
                     if self.trie.contains_prefix(letter):
-                        self.traverse_tiles(letter, row_index, col_index)
+                        for direction in WordSearch.directions:
+                            self.traverse_tiles(letter, row_index, col_index, direction)
                     col_index += 1
                 row_index += 1
 
@@ -99,42 +110,41 @@ class WordSearch:
         print('The following words were not found: {}'.format(
               ', '.join(sorted_remaining_words)))
 
-    def traverse_tiles(self, first_letter, row_index, col_index):
+    def traverse_tiles(self, prefix, row_index, col_index, direction):
+        """..."""
+        next_row_index = row_index
+        next_col_index = col_index
+        change_in_row = WordSearch.directions[direction][0]
+        change_in_col = WordSearch.directions[direction][1]
 
-        for direction_name in WordSearch.directions:
-            direction = WordSearch.directions[direction_name]
-            prefix = first_letter
-            next_row_index = row_index
-            next_col_index = col_index
+        while True:
+            next_row_index += change_in_row
+            next_col_index += change_in_col
+            try:
+                prefix += self.get_letter(next_row_index, next_col_index)
+            except IndexError:
+                break
 
-            while True:
-                next_row_index += direction[0]
-                next_col_index += direction[1]
-                try:
-                    prefix += self.get_letter(next_row_index, next_col_index)
-                except IndexError:
+            if self.trie.contains_prefix(prefix):
+                if prefix in self.remaining_words:
+                    self.found_words.append(prefix)
+                    self.remaining_words.remove(prefix)
+                    self.solutions[prefix] = ((row_index, col_index), direction)
+                    if not self.remaining_words:
+                        print("solved!")
+                        self.print_solutions()
+                        exit()
                     break
-
-                if self.trie.contains_prefix(prefix):
-                    if prefix in self.remaining_words:
-                        self.found_words.append(prefix)
-                        self.remaining_words.remove(prefix)
-                        print("'{}' can be found at row {}, column {} and moving {}".format(prefix, row_index, col_index, direction_name))
-                        break
-                    else:
-                        continue
                 else:
-                    break
-
-            if not self.remaining_words:
-                print("solved!")
-                exit()
+                    continue
+            else:
+                break
 
 
 # Helper functions to build a WordSearch object from input files
 
 def build_grid(filename):
-    """Scrape a formatted text file and convert it into a word search grid.
+    """Scrapes a formatted text file and converts it into a word search grid.
 
     Args:
         filename: A text file containing rows of alphabetical characters,
@@ -159,7 +169,7 @@ def build_grid(filename):
 
 
 def build_word_list(filename):
-    """Scrape a text file for the list of words that must be found.
+    """Scrapes a text file for the list of words that must be found.
 
     Args:
         filename: A text file containing a list of comma-separated values.
@@ -181,7 +191,7 @@ def build_word_list(filename):
 
 
 def main():
-    """Build and solve a sample word search."""
+    """Builds and solves a sample word search."""
     grid = build_grid('sample_grid.txt')
     word_list = build_word_list('sample_word_list.txt')
     word_search = WordSearch(grid, word_list)

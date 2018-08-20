@@ -34,21 +34,31 @@ class Trie:
                     node.add_child(letter)
                 node = node.children[letter]
 
-    def contains_prefix(self, prefix):
-        """Determines whether a given prefix exists in the trie.
+    def find_prefix(self, prefix, starting_node=None):
+        """Finds the node containing the given prefix.
+
+        By specifying the starting node, the search can begin partway down the
+        trie, improving search times.
+
+        Attributes:
+            prefix: The prefix to be found.
+            starting_node: Where the search should be started from. By default
+                the search begins at the root node.
 
         Returns:
-            A boolean value stating whether or not the prefix has been found.
+            The node containing the given prefix.
         """
-        current_node = self._root
+        if starting_node is None:
+            starting_node = self._root
+        current_node = starting_node
 
         for letter in prefix:
             if letter in current_node.children:
                 current_node = current_node.children[letter]
             else:
-                return False
+                return None
 
-        return True
+        return current_node
 
     @property
     def root(self):

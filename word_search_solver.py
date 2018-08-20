@@ -22,11 +22,9 @@ class WordSearch:
             found; this value should remain static.
         remaining_words: A set containing the words that have not yet been
             found by the solver.
-        found_words: A list containing the words that have been found by the
-            solver.
-        trie: A trie made up of the words contained in the word list.
         solutions: A dictionary that maps found words to tuples of the
             following format: (starting_cell, direction).
+        trie: A trie made up of the words contained in the word list.
     """
 
     directions = {'right':    (0, 1),
@@ -49,9 +47,9 @@ class WordSearch:
         self.grid = grid
         self.rows = len(self.grid)
         self.cols = len(self.grid[0])
+
         self._word_list = word_list
         self.remaining_words = set(word_list)
-        self.found_words = []
         self.solutions = {}
 
         self.trie = Trie()
@@ -135,11 +133,11 @@ class WordSearch:
         change_in_col = WordSearch.directions[direction][1]
 
         while True:
+            # If the current prefix exists in the trie
             if self.trie.contains_prefix(prefix):
-                # If the current prefix is one words that needs to be found
+                # If the current prefix is a word that still needs to be found
                 if prefix in self.remaining_words:
                     # Update the word and solutions lists
-                    self.found_words.append(prefix)
                     self.remaining_words.remove(prefix)
                     self.solutions[prefix] = ((row_index, col_index), direction)
                     # If all words have been found, then exit the program

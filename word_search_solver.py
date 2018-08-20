@@ -3,13 +3,37 @@ from trie import Trie
 
 
 class WordSearch:
-    """Contains all relevant information for a particular word search,
+    """Contains all relevant information for solving a particular word search,
     including:
 
     - Puzzle grid
-    - Word list (and it's corresponding trie)
+    - Word list (and its corresponding trie)
     - Methods to display and solve the word search
+
+    Attributes:
+        directions: A dictionary mapping the names of the eight directions used
+            when traversing the grid to their corresponding coordinate vectors.
+
+        grid: A 2d list representing the word search grid.
+        word_list: A list representation of all the words that need to be
+            found; this value should remain static.
+        remaining_words: A set containing the words that have not yet been
+            found by the solver.
+        found_words: A list containing the words that have been found by the
+            solver.
+        trie: A trie made up of the words contained in the word list.
+        solutions: A dictionary that maps found words to tuples of the
+            following format: (starting_cell, direction).
     """
+
+    directions = {'right':    (0, 1),
+                  'down-right': (1, 1),
+                  'down':       (1, 0),
+                  'down-left':  (1, -1),
+                  'left':       (0, -1),
+                  'up-left':    (-1, -1),
+                  'up':         (-1, 0),
+                  'up-right':   (-1, 1)}
 
     def __init__(self, grid, word_list):
         """Inits a WordSearch object.
@@ -20,16 +44,17 @@ class WordSearch:
         - Builds a trie representing the WordSearch's words.
         """
         self.grid = grid
-        self.word_list = word_list
+        self._word_list = word_list
         self.remaining_words = set(word_list)
         self.found_words = []
+        self.solutions = {}
 
         self.trie = Trie()
         self.build_trie()
 
     def build_trie(self):
         """Populate the trie with all words from the word list."""
-        for word in self.word_list:
+        for word in self._word_list:
             self.trie.insert_word(word)
 
     def print_grid(self):
@@ -41,7 +66,7 @@ class WordSearch:
     def print_word_list(self):
         """Print the list of words to the terminal."""
         print()
-        for word in self.word_list:
+        for word in self._word_list:
             print(word)
 
     def get_letter(self, row, column):
@@ -51,8 +76,9 @@ class WordSearch:
     def solve(self):
         """Solves the word search by locating the positions of all words.
 
-        Iterates over every cell in the grid and, if a possible match is found,
-        traverses its neighbours, until all words have been found
+        Locates all words by iterating over every cell in the grid, and, if a
+        possible match is found, traverses that cell's neighbours to build
+        larger prefixes.
         """
         row_index = 0
         while row_index <= len(self.grid):
@@ -73,20 +99,11 @@ class WordSearch:
         print('The following words were not found: {}'.format(
               ', '.join(sorted_remaining_words)))
 
-    def traverse_tiles(self, letter, row_index, col_index):
+    def traverse_tiles(self, first_letter, row_index, col_index):
 
-        directions = {'right':    (0, 1),
-                      'down-right': (1, 1),
-                      'down':       (1, 0),
-                      'down-left':  (1, -1),
-                      'left':       (0, -1),
-                      'up-left':    (-1, -1),
-                      'up':         (-1, 0),
-                      'up-right':   (-1, 1)}
-
-        for direction_name in directions:
-            direction = directions[direction_name]
-            prefix = letter
+        for direction_name in WordSearch.directions:
+            direction = WordSearch.directions[direction_name]
+            prefix = first_letter
             next_row_index = row_index
             next_col_index = col_index
 

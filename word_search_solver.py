@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+import sys
 from trie import Trie
 
 
@@ -67,13 +68,13 @@ class WordSearch:
         print("=" * 72)
         print("Puzzle")
         print("=" * 72)
-        print()
+        print('')
         for row in self.grid:
             print(' '.join(row))
-        print()
+        print('')
         for word in self._word_list:
             print(word)
-        print()
+        print('')
 
     def print_solutions(self):
         """Prints all solutions to the terminal."""
@@ -224,8 +225,17 @@ def build_word_list(filename):
 
 def main():
     """Builds and solves a sample word search."""
-    grid = build_grid('sample_grid2.txt')
-    word_list = build_word_list('sample_word_list2.txt')
+
+    # Ensure that filenames have been specified
+    if len(sys.argv) != 3:
+        print("Usage: ./word_search_solver.py grid_file word_list_file")
+        exit()
+    grid_file = sys.argv[1]
+    word_list_file = sys.argv[2]
+
+    # Build the WordSearch object
+    grid = build_grid(grid_file)
+    word_list = build_word_list(word_list_file)
     word_search = WordSearch(grid, word_list)
 
     word_search.solve()

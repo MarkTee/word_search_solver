@@ -1,1 +1,1 @@
-find, random, test, sleuth, backward, vertical, week, diagonal, wikipedia, horizontal, wordsearch, draw
+python, algorithm, false, trie, variable, wordsearch, random, traverse, grid, file, none, halt

@@ -238,6 +238,7 @@ def main():
     word_list = build_word_list(word_list_file)
     word_search = WordSearch(grid, word_list)
 
+    # Solve the word search
     word_search.solve()
     word_search.print_puzzle()
     word_search.print_solutions()

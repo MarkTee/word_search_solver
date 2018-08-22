@@ -15,6 +15,7 @@ class Trie:
         """Adds a word (and all its prefixes) to the trie."""
         node = self._root
         remaining_prefixes = None
+        index = None
 
         # Traverse the tree until a new prefix is found
         for index, letter in enumerate(word):

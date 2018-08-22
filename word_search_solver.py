@@ -144,20 +144,22 @@ class WordSearch:
         change_in_row = WordSearch.directions[direction][0]
         change_in_col = WordSearch.directions[direction][1]
         previous_node = None
+        last_letter = prefix[-1]
 
         while True:
             # To improve search times, we won't look up each prefix from the
             # root. Since we know all previous prefixes exist, we only need to
             # look at the last character of the prefix, and can start the
             # search from the last known node.
-            previous_node = self.trie.find_prefix(prefix[-1],
+            previous_node = self.trie.find_prefix(last_letter,
                                                   starting_node=previous_node)
             if previous_node is not None:
                 if prefix in self.remaining_words:
                     self.remaining_words.remove(prefix)
                     # Mark a solution as having been found
-                    self.solutions[prefix] = ((row_index, col_index), direction)
-                    if not self.remaining_words:  # yeords are found
+                    self.solutions[prefix] = ((row_index, col_index),
+                                              direction)
+                    if not self.remaining_words:  # if all words are found
                         return
 
                 # If a valid prefix is found, continue to traverse the grid in
@@ -167,7 +169,9 @@ class WordSearch:
                 # If an edge of the grid is about to be crossed, then stop
                 if 0 <= next_row_index < self.rows and \
                    0 <= next_col_index < self.cols:
-                    prefix += self.get_letter(next_row_index, next_col_index)
+                    last_letter = self.get_letter(next_row_index,
+                                                  next_col_index)
+                    prefix += last_letter
                 else:
                     return
             else:

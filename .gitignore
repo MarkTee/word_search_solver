@@ -1,0 +1,7 @@
+# Byte-compiled / Optimized / DLL files
+__pycache__/
+*.pyc
+*$py.class
+
+# Unit tests
+.pytest_cache/

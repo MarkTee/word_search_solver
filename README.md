@@ -3,7 +3,13 @@ This program solves word searches by using tries and depth-first search.
 
 # Usage
 
-> $ python word_search_solve.py grid_file word_list_file
+To solve an example word search:
+
+> $ python word_search_solver.py examples/grid.txt examples/word_list.txt
+
+To solve your own word search (be sure to specify the paths to your input files):
+
+> $ python word_search_solver.py grid_file word_list_file
 
 Text files containing the word search grid and the list of words to be found 
 can be passed through to the program.
